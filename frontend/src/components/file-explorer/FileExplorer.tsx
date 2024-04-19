@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   IoIosArrowBack,
   IoIosArrowForward,
   IoIosRefresh,
 } from "react-icons/io";
 import { twMerge } from "tailwind-merge";
-import { getWorkspace } from "../../services/fileService";
+import { useDispatch, useSelector } from "react-redux";
 import ExplorerTree from "./ExplorerTree";
-import { removeEmptyNodes } from "./utils";
 import IconButton from "../IconButton";
+import { fetchWorkspaceData } from "../../state/workspaceSlice";
+import { AppDispatch, RootState } from "../../store";
 
 interface ExplorerActionsProps {
   onRefresh: () => void;
@@ -69,19 +70,20 @@ interface FileExplorerProps {
 }
 
 function FileExplorer({ onFileClick }: FileExplorerProps) {
-  const [workspace, setWorkspace] = React.useState<TreeNode[]>([]);
   const [isHidden, setIsHidden] = React.useState(false);
 
-  const getWorkspaceData = async () => {
-    const wsFile = await getWorkspace();
-    setWorkspace(removeEmptyNodes([wsFile]));
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const workspace = useSelector(
+    (state: RootState) => state.workspace.workspace,
+  );
+
+  const refreshWorkspace = useCallback(() => {
+    dispatch(fetchWorkspaceData());
+  }, [dispatch]);
 
   React.useEffect(() => {
-    (async () => {
-      await getWorkspaceData();
-    })();
-  }, []);
+    refreshWorkspace();
+  }, [refreshWorkspace]);
 
   return (
     <div
@@ -102,7 +104,7 @@ function FileExplorer({ onFileClick }: FileExplorerProps) {
         <ExplorerActions
           isHidden={isHidden}
           toggleHidden={() => setIsHidden((prev) => !prev)}
-          onRefresh={getWorkspaceData}
+          onRefresh={refreshWorkspace}
         />
       </div>
     </div>

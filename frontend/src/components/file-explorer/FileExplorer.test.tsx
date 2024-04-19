@@ -1,9 +1,10 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import FileExplorer from "./FileExplorer";
 import { getWorkspace } from "../../services/fileService";
+import { renderWithProviders } from "../../../test-utils";
 
 vi.mock("../../services/fileService", async () => ({
   getWorkspace: vi.fn(async () => ({
@@ -23,7 +24,9 @@ describe("FileExplorer", () => {
   });
 
   it("should get the workspace directory", async () => {
-    const { getByText } = render(<FileExplorer onFileClick={vi.fn} />);
+    const { getByText } = renderWithProviders(
+      <FileExplorer onFileClick={vi.fn} />,
+    );
 
     expect(getWorkspace).toHaveBeenCalledTimes(1);
     await waitFor(() => {
@@ -31,11 +34,13 @@ describe("FileExplorer", () => {
     });
   });
 
-  it.todo("should render an empty workspace");
+  it.todo("should render an empty workspace if the workspace is empty");
+
+  it.todo("should render a loading spinner while fetching the workspace");
 
   it("calls the onFileClick function when a file is clicked", async () => {
     const onFileClickMock = vi.fn();
-    const { getByText } = render(
+    const { getByText } = renderWithProviders(
       <FileExplorer onFileClick={onFileClickMock} />,
     );
 
@@ -56,7 +61,9 @@ describe("FileExplorer", () => {
   });
 
   it("should refetch the workspace when clicking the refresh button", () => {
-    const { getByTestId } = render(<FileExplorer onFileClick={vi.fn} />);
+    const { getByTestId } = renderWithProviders(
+      <FileExplorer onFileClick={vi.fn} />,
+    );
 
     act(() => {
       userEvent.click(getByTestId("refresh"));
@@ -66,7 +73,7 @@ describe("FileExplorer", () => {
   });
 
   it("should toggle the explorer visibility when clicking the close button", async () => {
-    const { getByTestId, getByText, queryByText } = render(
+    const { getByTestId, getByText, queryByText } = renderWithProviders(
       <FileExplorer onFileClick={vi.fn} />,
     );
 
