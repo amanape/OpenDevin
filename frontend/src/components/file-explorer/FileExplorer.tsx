@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   IoIosArrowBack,
   IoIosArrowForward,
@@ -77,7 +77,7 @@ function FileExplorer({ onFileClick }: FileExplorerProps) {
     (state: RootState) => state.workspace.workspace,
   );
 
-  const refreshWorkspace = useCallback(() => {
+  const refreshWorkspace = React.useCallback(() => {
     dispatch(fetchWorkspaceData());
   }, [dispatch]);
 
@@ -95,7 +95,7 @@ function FileExplorer({ onFileClick }: FileExplorerProps) {
       <div className="flex p-2 items-center justify-between relative">
         <div style={{ display: isHidden ? "none" : "block" }}>
           <ExplorerTree
-            tree={workspace}
+            root={workspace}
             onFileClick={onFileClick}
             defaultOpen
           />

@@ -1,14 +1,4 @@
-export const removeEmptyNodes = (tree: TreeNode[]): TreeNode[] =>
-  tree.map((node) => {
-    if (node.children) {
-      const children = removeEmptyNodes(node.children);
-      return {
-        ...node,
-        children: children.length ? children : undefined,
-      };
-    }
-    return node;
-  });
+import { WorkspaceFile } from "../../services/fileService";
 
 /**
  * Recursive function to add a node to a tree structure.
@@ -17,7 +7,10 @@ export const removeEmptyNodes = (tree: TreeNode[]): TreeNode[] =>
  * @param pathParts - The parts of the path to the new node.
  * @returns The updated list of nodes.
  */
-export const addNode = (nodes: TreeNode[], pathParts: string[]): TreeNode[] => {
+export const addNode = (
+  nodes: WorkspaceFile[],
+  pathParts: string[],
+): WorkspaceFile[] => {
   // If there are no more parts in the path, return the current nodes.
   if (pathParts.length === 0) {
     return nodes;
@@ -43,4 +36,17 @@ export const addNode = (nodes: TreeNode[], pathParts: string[]): TreeNode[] => {
 
   // Return the updated list of nodes.
   return nodes;
+};
+
+export const removeEmptyNodes = (root: WorkspaceFile): WorkspaceFile => {
+  if (root.children) {
+    const children = root.children
+      .map(removeEmptyNodes)
+      .filter((node) => node !== undefined);
+    return {
+      ...root,
+      children: children.length ? children : undefined,
+    };
+  }
+  return root;
 };

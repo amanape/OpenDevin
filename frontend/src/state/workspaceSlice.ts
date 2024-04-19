@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getWorkspace } from "../services/fileService";
+import { WorkspaceFile, getWorkspace } from "../services/fileService";
 import { addNode, removeEmptyNodes } from "../components/file-explorer/utils";
 
 type WorkspaceState = {
-  workspace: TreeNode[];
+  workspace: WorkspaceFile;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 };
 
 const initialState: WorkspaceState = {
-  workspace: [],
+  workspace: { name: "", children: [] },
   status: "idle",
   error: null,
 };
@@ -18,7 +18,7 @@ export const fetchWorkspaceData = createAsyncThunk(
   "workspace/fetchWorkspaceData",
   async () => {
     const wsFile = await getWorkspace();
-    return removeEmptyNodes([wsFile]);
+    return removeEmptyNodes(wsFile);
   },
 );
 
@@ -28,7 +28,7 @@ const workspaceSlice = createSlice({
   reducers: {
     addNodeToWorkspace: (state, action: PayloadAction<string>) => {
       const pathParts = action.payload.split("/");
-      state.workspace = addNode(state.workspace, pathParts);
+      state.workspace = addNode([state.workspace], pathParts).pop()!;
     },
   },
   extraReducers: (builder) => {
