@@ -8,6 +8,7 @@ class CreateFileAction(Action):
     content: Optional[str] = None
     runnable: ClassVar[bool] = True
     thought: str = ''
+    action = 'create'
     
     def __str__(self) -> str:
         return f'**CreateFileAction**\n{self.path}'
@@ -18,6 +19,7 @@ class ReadFileAction(Action):
     path: str
     runnable: ClassVar[bool] = True
     thought: str = ''
+    action = 'read'
     
     def __str__(self) -> str:
         return f'**ReadFileAction**\n{self.path}'
@@ -26,11 +28,12 @@ class ReadFileAction(Action):
 @dataclass
 class WriteFileAction(Action):
     path: str
+    content: str
     start: int = 0
     stop: int = -1 # -1 means end of file
-    content: str
     runnable: ClassVar[bool] = True
     thought: str = ''
+    action = 'write'
     
     def __str__(self) -> str:
         return f'**WriteFileAction**\n{self.path}'

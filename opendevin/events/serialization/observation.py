@@ -7,23 +7,24 @@ from opendevin.events.observation.commands import (
 from opendevin.events.observation.delegate import AgentDelegateObservation
 from opendevin.events.observation.empty import NullObservation
 from opendevin.events.observation.error import ErrorObservation
-from opendevin.events.observation.files import FileReadObservation, FileWriteObservation
 from opendevin.events.observation.observation import Observation
 from opendevin.events.observation.recall import AgentRecallObservation
 from opendevin.events.observation.success import SuccessObservation
+from opendevin.events.observation.editor import CreateFileObservation, ReadFileObservation, WriteFileObservation
 
 observations = (
     NullObservation,
     CmdOutputObservation,
     IPythonRunCellObservation,
     BrowserOutputObservation,
-    FileReadObservation,
-    FileWriteObservation,
     AgentRecallObservation,
     AgentDelegateObservation,
     SuccessObservation,
     ErrorObservation,
     AgentStateChangedObservation,
+    CreateFileObservation,
+    ReadFileObservation,
+    WriteFileObservation,
 )
 
 OBSERVATION_TYPE_TO_CLASS = {

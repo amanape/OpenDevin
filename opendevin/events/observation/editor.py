@@ -6,6 +6,7 @@ from .observation import Observation
 class CreateFileObservation(Observation):
     path: str
     success: bool
+    observation = 'create'
     
     def __str__(self) -> str:
         return f'**CreateFileObservation**\nsuccess: {self.success}\npath: {self.path}'
@@ -14,6 +15,7 @@ class CreateFileObservation(Observation):
 @dataclass
 class ReadFileObservation(Observation):
     path: str
+    observation = 'read'
     
     def __str__(self) -> str:
         return f'**ReadFileObservation**\n{self.content}'
@@ -23,6 +25,7 @@ class ReadFileObservation(Observation):
 class WriteFileObservation(Observation):
     path: str
     success: bool
+    observation = 'write'
     
     def __str__(self) -> str:
-        return f'**WriteFileObservation**\nsuccess: {self.success}\npath: {self.path}{f"\ncontent: {self.content}" if self.content else ""}'
+        return f'**WriteFileObservation**\nsuccess: {self.success}\npath: {self.path}'

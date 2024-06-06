@@ -205,17 +205,17 @@ class VSCodeActAgent(Agent):
         thought = action_str.replace(python_code.group(0), '').strip()
         parsed = handleEditorAction(data)
 
-        match parsed.operation:
+        match parsed.get('operation'):
             case 'create':
-                return CreateFileAction(path=parsed.filename, thought=thought)
+                return CreateFileAction(path=parsed.get('filename'), thought=thought)
             case 'open':
-                return ReadFileAction(path=parsed.filename, thought=thought)
+                return ReadFileAction(path=parsed.get('filename'), thought=thought)
             case 'edit':
                 return WriteFileAction(
-                    path=parsed.filename,
-                    start=int(parsed.start),
-                    stop=int(parsed.end),
-                    content=parsed.content,
+                    path=parsed.get('filename'),
+                    start=int(parsed.get('start')),
+                    stop=int(parsed.get('end')),
+                    content=parsed.get('content'),
                     thought=thought,
                 )
             case _:
