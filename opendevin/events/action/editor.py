@@ -26,14 +26,14 @@ class ReadFileAction(Action):
     
 
 @dataclass
-class WriteFileAction(Action):
+class UpdateFileAction(Action):
     path: str
     content: str
     start: int = 0
     stop: int = -1 # -1 means end of file
     runnable: ClassVar[bool] = True
     thought: str = ''
-    action = 'write'
+    action = 'update'
     
     def __str__(self) -> str:
-        return f'**WriteFileAction**\n{self.path}'
+        return f'**UpdateFileAction**\n{self.path}'

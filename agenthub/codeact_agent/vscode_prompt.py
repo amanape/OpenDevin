@@ -1,50 +1,54 @@
-from opendevin.runtime.plugins import AgentSkillsRequirement
+# ======= AVAILABLE COMMANDS =======
+EDITOR_COMMANDS = """
+- `create`: Create a new file.
+  - Required fields: `path`.
+  - Example: `<operation>create</operation><path>app.py</path>`
+- `read`: Read the content of a file.
+  - Required fields: `path`.
+  - Example: `<operation>read</operation><path>app.py</path>`
+- `update`: Update the content of a file.
+  - Required fields: `path`, `start`, `stop`, `content`.
+  - Example: `<operation>update</operation><path>app.py</path><start>1</start><stop>1</stop><content>print("Hello World!")</content>`
+"""
 
-_AGENT_SKILLS_DOCS = AgentSkillsRequirement.documentation
 
 COMMAND_DOCS = (
-    '\nApart from the standard Python library, the assistant can also use the following functions (already imported) in <execute_ipython> environment:\n'
-    f'{_AGENT_SKILLS_DOCS}'
-    "Please note that THE `edit_file` FUNCTION REQUIRES PROPER INDENTATION. If the assistant would like to add the line '        print(x)', it must fully write that out, with all those spaces before the code! Indentation is important and code that is not indented correctly will fail and require fixing before it can be run."
+    '\nThe assistant can also use the following functions in <execute_editor> environment:\n'
+    f'{EDITOR_COMMANDS}'
+    "Please note that THE `update` COMMAND REQUIRES PROPER INDENTATION. If the assistant would like to add the line '        print(x)', it must fully write that out, with all those spaces before the code! Indentation is important and code that is not indented correctly will fail and require fixing before it can be run."
 )
+
 
 # ======= SYSTEM MESSAGE =======
 MINIMAL_SYSTEM_PREFIX = """A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
-The assistant can interact with the VSCode editor and receive the corresponding output when needed. The code should be enclosed using "<execute_editor>" tag and specify the relevant operation
+The assistant can interact with the VSCode editor and receive the corresponding output. The code should be enclosed using "<execute_editor>" tag and specify the relevant operation
 with the content (if any), for example:
 <execute_editor>
-<operation>
-edit
-</operation>
-<filename>
-app.py
-</filename>
-<start>
-1
-</start>
-<end>
-1
-</end>
-<content>
-print("Hello World!")
-</content>
+<operation>update</operation>
+<path>app.py</path>
+<start>1</start>
+<stop>1</stop>
+<content>print("Hello World!")</content>
 </execute_editor>
 The assistant can execute bash commands on behalf of the user by wrapping them with <execute_bash> and </execute_bash>.
 For example, you can list the files in the current directory by <execute_bash> ls </execute_bash>.
 """
 
+
 BROWSING_PREFIX = """The assistant can browse the Internet with commands on behalf of the user by wrapping them with <execute_browse> and </execute_browse>.
-For example, you can browse a given URL by <execute_browse> goto("<URL>") </execute_browse>.
+For example, you can browse a given URL by <execute_browse><operation>navigate</operation><url>https://example.com/</url></execute_browse>.
 The assistant should attempt fewer things at a time instead of putting too much commands OR code in one "execute" block.
 """
-PIP_INSTALL_PREFIX = """The assistant can install Python packages using the %pip magic command in an IPython environment by using the following syntax: <execute_ipython> %pip install [package needed] </execute_ipython> and should always import packages and define variables before starting to use them."""
+
 
 SYSTEM_PREFIX = MINIMAL_SYSTEM_PREFIX
+
 
 GITHUB_MESSAGE = """To do any activities on GitHub, the assistant should use the token in the $GITHUB_TOKEN environment variable.
 For instance, to push a local branch `my_branch` to the github repo `owner/repo`, the assistant can use the following four commands:
 <execute_bash> git push https://$GITHUB_TOKEN@github.com/owner/repo.git my_branch </execute_bash>
 If the assistant require access to GitHub but $GITHUB_TOKEN is not set, ask the user to set it."""
+
 
 SYSTEM_SUFFIX = """The assistant's response should be concise.
 The assistant should include ONLY ONE ROOT TAG (<execute_editor> or <execute_bash> or <execute_browse>) in every one of the responses, unless the assistant is finished with the task or need more input or action from the user in order to proceed.
@@ -62,7 +66,7 @@ ASSISTANT:
 Sure! Let me create a file first:
 <execute_editor>
 <operation>create</operation>
-<filename>app.py</filename>
+<path>app.py</path>
 </execute_editor>
 
 USER:
@@ -74,10 +78,10 @@ OBSERVATION:
 ASSISTANT:
 Now I will write the Python code for starting a web server and save it to the file `app.py`:
 <execute_editor>
-<operation>edit</operation>
-<filename>app.py</filename>
+<operation>update</operation>
+<path>app.py</path>
 <start>1</start>
-<end>1</end>
+<stop>1</stop>
 <content>from flask import Flask
 app = Flask(__name__)
 
@@ -182,7 +186,8 @@ USER: Now browse the newly started server's homepage and show me the content.
 ASSISTANT:
 Sure! Let me browse the server's homepage at http://127.0.0.1:5000:
 <execute_browse>
-goto("http://127.0.0.1:5000")
+<operation>navigate</operation>
+<url>http://127.0.0.1:5000</url>
 </execute_browse>
 
 USER:
@@ -207,8 +212,8 @@ OBSERVATION:
 ASSISTANT:
 The server has been stopped. Let me open the Python file and modify it.
 <execute_editor>
-<operation>open</operation>
-<filename>app.py</filename>
+<operation>read</operation>
+<path>app.py</path>
 </execute_editor>
 
 USER:
@@ -227,10 +232,10 @@ USER:
 ASSISTANT:
 I should edit the file to display the numbers in a table format. I should include correct indentation. Let me update the file:
 <execute_editor>
-<operation>edit</operation>
-<filename>app.py</filename>
+<operation>update</operation>
+<path>app.py</path>
 <start>7</start>
-<end>7</end>
+<stop>7</stop>
 <content>    return '<table>' + ''.join([f'<tr><td>{i}</td></tr>' for i in numbers]) + '</table>'</content>
 </execute_editor>
 
@@ -264,6 +269,7 @@ The server is running on port 5000 with PID 126. You can access the list of numb
 
 --- END OF EXAMPLE ---
 """
+
 
 INVALID_INPUT_MESSAGE = (
     "I don't understand your input. \n"

@@ -22,10 +22,10 @@ class ReadFileObservation(Observation):
     
 
 @dataclass
-class WriteFileObservation(Observation):
+class UpdateFileObservation(Observation):
     path: str
     success: bool
-    observation = 'write'
+    observation = 'update'
     
     def __str__(self) -> str:
-        return f'**WriteFileObservation**\nsuccess: {self.success}\npath: {self.path}'
+        return f'**UpdateFileObservation**\nsuccess: {self.success}\npath: {self.path}'

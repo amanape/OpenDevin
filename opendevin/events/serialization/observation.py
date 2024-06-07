@@ -10,7 +10,7 @@ from opendevin.events.observation.error import ErrorObservation
 from opendevin.events.observation.observation import Observation
 from opendevin.events.observation.recall import AgentRecallObservation
 from opendevin.events.observation.success import SuccessObservation
-from opendevin.events.observation.editor import CreateFileObservation, ReadFileObservation, WriteFileObservation
+from opendevin.events.observation.editor import CreateFileObservation, ReadFileObservation, UpdateFileObservation
 
 observations = (
     NullObservation,
@@ -24,7 +24,7 @@ observations = (
     AgentStateChangedObservation,
     CreateFileObservation,
     ReadFileObservation,
-    WriteFileObservation,
+    UpdateFileObservation,
 )
 
 OBSERVATION_TYPE_TO_CLASS = {
