@@ -24,7 +24,7 @@ def get_in_context_example() -> str:
 
 
 class VSCodeActAgent(Agent):
-  VERSION = '0.1.1'
+  VERSION = '0.1.2'
   
   system_message: str = get_system_message()
   in_context_example: str = f"Here is an example of how you can interact with the environment for task solving:\n{get_in_context_example()}\n\nNOW, LET'S START!"
@@ -106,12 +106,12 @@ class VSCodeActAgent(Agent):
         thought = action_str.replace(python_code.group(0), '').strip()
 
         parsed = handleEditorAction(data)
-        match parsed.get('operation'):
+        match parsed.get('operation', ''):
             case 'create':
                 return CreateFileAction(path=parsed.get('path'), thought=thought)
             case 'read':
                 return ReadFileAction(path=parsed.get('path'), thought=thought)
-            case 'update':
+            case 'update' | 'edit':
                 return UpdateFileAction(
                     path=parsed.get('path'),
                     start=int(parsed.get('start')),

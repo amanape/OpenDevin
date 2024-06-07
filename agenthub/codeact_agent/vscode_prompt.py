@@ -3,10 +3,10 @@ EDITOR_COMMANDS = """
 - `create`: Create a new file.
   - Required fields: `path`.
   - Example: `<operation>create</operation><path>app.py</path>`
-- `read`: Read the content of a file.
+- `read`: Read the content of a file. This also opens the file for editing.
   - Required fields: `path`.
   - Example: `<operation>read</operation><path>app.py</path>`
-- `update`: Update the content of a file.
+- `update`: Update or edit the content of a file.
   - Required fields: `path`, `start`, `stop`, `content`.
   - Example: `<operation>update</operation><path>app.py</path><start>1</start><stop>1</stop><content>print("Hello World!")</content>`
 """

@@ -124,9 +124,9 @@ def handleEditorAction(raw: str) -> dict[str, str]:
     operation = re.search(r'<operation>(.*?)</operation>', raw, re.DOTALL).group(1)
     path = re.search(r'<path>(.*?)</path>', raw, re.DOTALL).group(1)
 
-    if operation == 'create' or operation == 'open':
+    if operation == 'create' or operation == 'read':
         return {'operation': operation, 'path': path}
-    elif operation == 'edit':
+    elif operation == 'update' or operation == 'edit': # OD seems to like using 'edit' rather than 'update' sometimes, even though its not defined
         start = re.search(r'<start>(.*?)</start>', raw, re.DOTALL).group(1)
         stop = re.search(r'<stop>(.*?)</stop>', raw, re.DOTALL).group(1)
         content = re.search(r'<content>(.*?)</content>', raw, re.DOTALL).group(1)
